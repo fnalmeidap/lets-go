@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -14,7 +13,8 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", handleRequest)
 
-	if err := http.ListenAndServe(SERVER_PORT, nil); err != nil {
+	err := http.ListenAndServe(SERVER_PORT, nil)
+	if err != nil {
 		panic(err)
 	}
 }
