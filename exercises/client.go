@@ -1,49 +1,40 @@
 package main
+// message := "POST / HTTP/1.1\r\n" +
+// 	"Host: localhost:8080\r\n" +
+// 	"Content-Type: application/json\r\n" +
+// 	"Content-Length: " + fmt.Sprint(len(messageBody)) + "\r\n" +
+// 	messageBody +
+// 	"\r\n"
 
 import (
-	"bytes"
-	"encoding/json"
+	"bufio"
 	"fmt"
-	"io/ioutil"
-	"net/http"
+	"net"
 )
 
-type Message struct {
-	content string
-}
+func sendHttpRequest(conn net.Conn) {
+	defer conn.Close()
 
-func createRequest(m Message) (req *http.Request) {
-	endpoint := "http://localhost:1997"
-	buf, err := json.Marshal(m.content)
+	message := "Hello!\n"
+	conn.Write([]byte(message))
+
+	response, err := bufio.NewReader(conn).ReadString('\n')
 	if err != nil {
-		panic(err)
+		fmt.Printf("Erro ao ler a resposta do servidor: %s\n", err)
+		return
 	}
 
-	req, err = http.NewRequest("POST", endpoint, bytes.NewBuffer(buf))
-	if err != nil {
-		panic(err)
-	}
-
-	return
+	fmt.Printf(response)
 }
 
 func main() {
-	client := &http.Client{}
-	m := Message{"Hello!"}
-	req := createRequest(m)
-	
-	for i := 0; i < 100; i++ {
-		response, err := client.Do(req)
-		defer response.Body.Close()
+	for {
+		conn, err := net.Dial("tcp", "localhost:8080")
 		if err != nil {
-			panic(err)
+			fmt.Printf("Erro ao conectar ao servidor: %s\n", err)
+			return
 		}
-		
-		body, err := ioutil.ReadAll(response.Body)
-		if err != nil {
-			panic(err)
-		}
-		
-		fmt.Print(string(body))
+
+		sendHttpRequest(conn)
 	}
 }

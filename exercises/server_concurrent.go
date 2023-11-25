@@ -1,12 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
 
-const SERVER_PORT string = ":1997"
 
 func handlePostRequest(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
