@@ -1,20 +1,19 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 )
 
 func sendHttpRequest(conn net.Conn) {
-	request := "Hello!\n"
+	request := "POST /path HTTP/1.1\r\n" +
+				"Host: localhost:8000\r\n" +
+				"Content-Type: text/plain\r\n" +
+				"Content-Length: 18\r\n\r\n" +
+				"Hello from client!"
 	conn.Write([]byte(request))
-	// request := "GET / HTTP/1.1\r\n" +
-	// 	"Host:  localhost:8080\r\n" +
-	// 	"Connection: close\r\n" +
-	// 	"\r\n"
 
-	_, err := bufio.NewReader(conn).ReadString('\n')
+	_, err := conn.Read(make([]byte, 1024))
 	if err != nil {
 		fmt.Println("Error when reading server's response!")
 		panic(err)

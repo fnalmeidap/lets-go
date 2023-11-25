@@ -1,39 +1,31 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"net"
 	"time"
 	"sync"
 )
 
-func handleConnection(conn net.Conn, wg *sync.WaitGroup) {
+func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	message, err := bufio.NewReader(conn).ReadString('\n')
+	response := "HTTP/1.1 200 OK"
+
+	_, err := conn.Read(make([]byte, 1024))
 	if err != nil {
-		fmt.Println("Error when reading client's request!")
-		panic(err)
+		response = "HTTP/1.1 500 Internal Server Error"
 	}
 
-	fmt.Printf(message)
-
-	// response := "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n" +
-	// "\r\nMensagem recebida com sucesso!" +
-	// "\r\n"
-	response := "Message received!\n"
 	conn.Write([]byte(response))
 }
 
 func main() {
-	fmt.Println("TCP server running in :8080")
-
 	listener, err := net.Listen("tcp", ":8080")
 	defer listener.Close()
 	if err != nil {
-		fmt.Println("Error when creating listener.")
-		panic(err)
+		fmt.Println("Error when creating listener %s", err)
+		return
 	}
 
 	conn, err := listener.Accept()
@@ -48,7 +40,7 @@ func main() {
 	startTime := time.Now().UnixNano()
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
-		go handleConnection(conn, &wg)
+		go handleHttpRequest(conn, &wg)
 	}
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime) / 1e6)
