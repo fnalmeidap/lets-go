@@ -43,5 +43,5 @@ func main() {
 		go handleHttpRequest(conn, &wg)
 	}
 	wg.Wait()
-	fmt.Println((time.Now().UnixNano() - startTime) / 1e6)
+	fmt.Println((time.Now().UnixNano() - startTime))
 }

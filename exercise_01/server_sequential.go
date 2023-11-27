@@ -36,5 +36,5 @@ func main() {
 	for i := 0; i < 100; i++ {
 		handleHttpRequest(conn)
 	}
-	fmt.Println((time.Now().UnixNano() - startTime) / 1e6)
+	fmt.Println((time.Now().UnixNano() - startTime))
 }

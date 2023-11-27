@@ -6,10 +6,10 @@ import (
 )
 
 func sendHttpRequest(conn net.Conn) {
-	request := "POST /path HTTP/1.1\r\n" +
-				"Host: localhost:8000\r\n" +
-				"Content-Type: text/plain\r\n" +
-				"Content-Length: 18\r\n\r\n" +
+	request := "POST /path HTTP/1.1\n" +
+				"Host: localhost:8000\n" +
+				"Content-Type: text/plain\n" +
+				"Content-Length: 18\n" +
 				"Hello from client!"
 	conn.Write([]byte(request))
 
