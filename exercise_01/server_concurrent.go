@@ -8,6 +8,7 @@ import (
 )
 
 func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
+	defer conn.Close()
 	defer wg.Done()
 
 	response := "HTTP/1.1 200 OK"
@@ -27,18 +28,17 @@ func main() {
 		fmt.Println("Error when creating listener %s", err)
 		return
 	}
-
-	conn, err := listener.Accept()
-	defer conn.Close()
-	if err != nil {
-		fmt.Println("Error when connecting with client: %s", err)
-		return
-	}
 	
 	wg := sync.WaitGroup{}
-	
+	count := 0
 	startTime := time.Now().UnixNano()
 	for i := 0; i < 100; i++ {
+		conn, err := listener.Accept()
+		if err != nil {
+			fmt.Println("Error when connecting with client: %s", err)
+			return
+		}
+
 		wg.Add(1)
 		go handleHttpRequest(conn, &wg)
 	}

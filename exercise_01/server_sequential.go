@@ -25,15 +25,14 @@ func main() {
 		return
 	}
 
-	conn, err := listener.Accept()
-	defer conn.Close()
-	if err != nil {
-		fmt.Println("Error when connecting with client: %s", err)
-		return
-	}
-
 	startTime := time.Now().UnixNano()
 	for i := 0; i < 100; i++ {
+		conn, err := listener.Accept()
+		defer conn.Close()
+		if err != nil {
+			fmt.Println("Error when connecting with client: %s", err)
+			return
+		}
 		handleHttpRequest(conn)
 	}
 	fmt.Println((time.Now().UnixNano() - startTime))
