@@ -7,6 +7,10 @@ import (
 	"sync"
 )
 
+const clientRequests = 99 // same as in client.go
+const batchSize = 33
+const splits = clientRequests/batchSize
+
 func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
@@ -36,11 +40,13 @@ func main() {
 	}
 	
 	wg := sync.WaitGroup{}
-	
+
 	startTime := time.Now().UnixNano()
-	for i := 0; i < 100; i++ {
-		wg.Add(1)
-		go handleHttpRequest(conn, &wg)
+	for i := 0; i < splits; i++ {
+		for j := 0; j <= batchSize; j++ {
+			wg.Add(1)
+			go handleHttpRequest(conn, &wg)
+		}
 	}
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))

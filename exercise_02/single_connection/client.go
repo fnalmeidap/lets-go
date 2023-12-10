@@ -5,6 +5,8 @@ import (
 	"net"
 )
 
+clientRequests = 99 // same as in server_concurrent.go
+
 func sendHttpRequest(conn net.Conn) {
 	request := "POST /path HTTP/1.1\n" +
 				"Host: localhost:8000\n" +
@@ -28,7 +30,7 @@ func main() {
 		return
 	}
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i <= constants.clientRequests; i++ {
 		sendHttpRequest(conn)
 	}
 }
