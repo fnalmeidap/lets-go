@@ -24,6 +24,14 @@ func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	conn.Write([]byte(response))
 }
 
+func dispatchRequestBatch(conn net.Conn, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for j := 0; j <= batchSize; j++ {
+		wg.Add(1)
+		go handleHttpRequest(conn, wg)
+	}
+}
+
 func main() {
 	listener, err := net.Listen("tcp", ":8080")
 	defer listener.Close()
@@ -43,10 +51,8 @@ func main() {
 
 	startTime := time.Now().UnixNano()
 	for i := 0; i < splits; i++ {
-		for j := 0; j <= batchSize; j++ {
-			wg.Add(1)
-			go handleHttpRequest(conn, &wg)
-		}
+		wg.Add(1)
+		go dispatchRequestBatch(conn, &wg);
 	}
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))
