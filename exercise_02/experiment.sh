@@ -1,6 +1,6 @@
 #! /bin/bash
 
-CONNECTION_TYPE="single" # single | multiple
+CONNECTION_TYPE="multiple" # single | multiple
 
 echo "Experiment with $CONNECTION_TYPE" connections.
 

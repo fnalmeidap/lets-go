@@ -5,6 +5,8 @@ import (
 	"net"
 )
 
+const clientRequests = 99 // same as in server_concurrent.go
+
 func sendHttpRequest(conn net.Conn) {
 	request := "POST /path HTTP/1.1\n" +
 				"Host: localhost:8000\n" +
@@ -21,7 +23,7 @@ func sendHttpRequest(conn net.Conn) {
 }
 
 func main() {
-	for i := 0; i < 100; i++ {
+	for i := 0; i < clientRequests; i++ {
 		conn, err := net.Dial("tcp", "localhost:8080")
 		if err != nil {
 			fmt.Println("Error when connecting with server: %s", err)
