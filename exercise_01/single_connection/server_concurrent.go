@@ -21,7 +21,7 @@ func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 }
 
 func main() {
-	listener, err := net.Listen("tcp", ":8080")
+	listener, err := net.Listen("tcp", ":8081")
 	defer listener.Close()
 	if err != nil {
 		fmt.Println("Error when creating listener %s", err)
@@ -36,7 +36,6 @@ func main() {
 	}
 	
 	wg := sync.WaitGroup{}
-	
 	startTime := time.Now().UnixNano()
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
@@ -45,3 +44,4 @@ func main() {
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))
 }
+

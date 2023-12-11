@@ -14,8 +14,8 @@ const btSize = requests/batches
 func handleBatchHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	response := "HTTP/1.1 200 OK"
 	for i := 0; i < btSize; i++ {
+		response := "HTTP/1.1 200 OK"
 		_, err := conn.Read(make([]byte, 1024))
 		if err != nil {
 			response = "HTTP/1.1 500 Internal Server Error"
