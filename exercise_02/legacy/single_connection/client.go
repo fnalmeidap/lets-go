@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-const clientRequests = 99 // same as in server_concurrent.go
+const clientRequests = 100000 // same as in server_concurrent.go
 
 func sendHttpRequest(conn net.Conn) {
 	request := "POST /path HTTP/1.1\n" +

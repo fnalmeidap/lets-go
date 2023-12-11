@@ -7,8 +7,8 @@ import (
 	"sync"
 )
 
-const clientRequests = 99 // same as in client.go
-const batchSize = 33
+const clientRequests = 100000 // same as in client.go
+const batchSize = 5
 const splits = clientRequests/batchSize
 
 func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
