@@ -7,17 +7,22 @@ import (
 	"sync"
 )
 
-func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
+const requests = 100
+const batches = 5
+const btSize = requests/batches
+
+func handleBatchHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-	response := "HTTP/1.1 200 OK"
-
-	_, err := conn.Read(make([]byte, 1024))
-	if err != nil {
-		response = "HTTP/1.1 500 Internal Server Error"
+	for i := 0; i < btSize; i++ {
+		response := "HTTP/1.1 200 OK"
+		_, err := conn.Read(make([]byte, 1024))
+		if err != nil {
+			response = "HTTP/1.1 500 Internal Server Error"
+		}
+	
+		conn.Write([]byte(response))
 	}
-
-	conn.Write([]byte(response))
 }
 
 func main() {
@@ -34,13 +39,12 @@ func main() {
 		fmt.Println("Error when connecting with client: %s", err)
 		return
 	}
-	
-	wg := sync.WaitGroup{}
 
+	wg := sync.WaitGroup{}
 	startTime := time.Now().UnixNano()
-	for i := 0; i < 100; i++ {
+	for i := 0; i < batches; i++ {
 		wg.Add(1)
-		go handleHttpRequest(conn, &wg)
+		go handleBatchHttpRequest(conn, &wg)
 	}
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))

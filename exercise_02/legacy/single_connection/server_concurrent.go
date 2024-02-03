@@ -7,6 +7,10 @@ import (
 	"sync"
 )
 
+const clientRequests = 100000 // same as in client.go
+const batchSize = 5
+const splits = clientRequests/batchSize
+
 func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	defer wg.Done()
 
@@ -20,8 +24,16 @@ func handleHttpRequest(conn net.Conn, wg *sync.WaitGroup) {
 	conn.Write([]byte(response))
 }
 
+func dispatchRequestBatch(conn net.Conn, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for j := 0; j <= batchSize; j++ {
+		wg.Add(1)
+		go handleHttpRequest(conn, wg)
+	}
+}
+
 func main() {
-	listener, err := net.Listen("tcp", ":8081")
+	listener, err := net.Listen("tcp", ":8080")
 	defer listener.Close()
 	if err != nil {
 		fmt.Println("Error when creating listener %s", err)
@@ -38,9 +50,9 @@ func main() {
 	wg := sync.WaitGroup{}
 
 	startTime := time.Now().UnixNano()
-	for i := 0; i < 100; i++ {
+	for i := 0; i < splits; i++ {
 		wg.Add(1)
-		go handleHttpRequest(conn, &wg)
+		go dispatchRequestBatch(conn, &wg);
 	}
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))
