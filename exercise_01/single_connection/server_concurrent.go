@@ -36,6 +36,7 @@ func main() {
 	}
 	
 	wg := sync.WaitGroup{}
+
 	startTime := time.Now().UnixNano()
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
@@ -44,4 +45,3 @@ func main() {
 	wg.Wait()
 	fmt.Println((time.Now().UnixNano() - startTime))
 }
-
