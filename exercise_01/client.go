@@ -21,14 +21,14 @@ func sendHttpRequest(conn net.Conn) {
 }
 
 func main() {
-	for i := 0; i < 100; i++ {
-		conn, err := net.Dial("tcp", "localhost:8080")
-		if err != nil {
-			fmt.Println("Error when connecting with server: %s", err)
-			return
-		}
-		defer conn.Close()
+	conn, err := net.Dial("tcp", "localhost:8080")
+	defer conn.Close()
+	if err != nil {
+		fmt.Println("Error when connecting with server: %s", err)
+		return
+	}
 
+	for i := 0; i < 100; i++ {
 		sendHttpRequest(conn)
 	}
 }
