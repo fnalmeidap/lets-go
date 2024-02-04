@@ -47,7 +47,7 @@ func main() {
 			response = "HTTP/1.1 500 Internal Server Error"
 		}
 
-		handleHttpRequest(&wg, conn, addr, response)
+		go handleHttpRequest(&wg, conn, addr, response)
 		
 		fmt.Printf("Request %d from address %s:\n%s\n\n", i+1, addr, string(buffer[:n]))
 	}

@@ -48,25 +48,7 @@ func main() {
 	for i := 0; i < requests; i++ {
 		startTime := time.Now().UnixNano()
 		sendHttpRequest(conn)
-		// request := "POST /path HTTP/1.1\n" +
-		// "Host: localhost:8081\n" +
-		// "Content-Type: text/plain\n" +
-		// "Content-Length: 18\n" +
-		// "Hello from client!"
-		// // buffer := make([]byte, 1024)
-		// _, err := conn.Write([]byte(request))
-		// if err != nil {
-		// fmt.Println("Error sending message.")
-		// panic(err)
-		// }
 
-		// n, _, err := conn.ReadFromUDP(make([]byte, 1024))
-		// if err != nil {
-		// fmt.Println("Error reading server's response.")
-		// panic(err)
-		// }
-
-		// fmt.Println("Response from server:", string(buffer[:n]))
 		fmt.Printf("RTT for request %d: %d ms\n", i + 1, (time.Now().UnixNano() - startTime))
 	}
 }
