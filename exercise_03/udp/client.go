@@ -8,7 +8,7 @@ import (
 
 const requests = 10000
 
-func sendHttpRequest(conn net.Conn) {
+func sendHttpRequest(conn *net.UDPConn) {
 	request := "POST /path HTTP/1.1\n" +
 				"Host: localhost:8081\n" +
 				"Content-Type: text/plain\n" +

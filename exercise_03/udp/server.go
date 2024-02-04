@@ -9,13 +9,13 @@ import (
 
 const requests = 10000
 
-func handleHttpRequest(wg *sync.WaitGroup, conn net.Conn, addr *net.UDPAddr, message string) {
+func handleHttpRequest(wg *sync.WaitGroup, conn *net.UDPConn, addr *net.UDPAddr, message string) {
 	defer wg.Done()
-	// response := []byte(message)
-	// _, err := conn.WriteToUDP(response, addr)
-	// if err != nil {
-	// 	fmt.Println("Error sending response:", err)
-	// }
+	response := []byte(message)
+	_, err := conn.WriteToUDP(response, addr)
+	if err != nil {
+		fmt.Println("Error sending response:", err)
+	}
 }
 
 func main() {
