@@ -21,18 +21,15 @@ func sendHttpRequest(conn *net.UDPConn) {
 		panic(err)
 	}
 
-	buffer := make([]byte, 1024)
-	n, _, err := conn.ReadFromUDP(buffer)
+	_, _, err = conn.ReadFromUDP(make([]byte, 1024))
 	if err != nil {
 		fmt.Println("Error reading server's response.")
 		panic(err)
 	}
-
-	fmt.Println("Response from server:", string(buffer[:n]))
 }
 
 func main() {
-	serverAddr, err := net.ResolveUDPAddr("udp", "localhost:8081")
+	serverAddr, err := net.ResolveUDPAddr("udp", "localhost:8082")
 	if err != nil {
 		fmt.Println("Error resolving server address:", err)
 		return
@@ -48,7 +45,6 @@ func main() {
 	for i := 0; i < requests; i++ {
 		startTime := time.Now().UnixNano()
 		sendHttpRequest(conn)
-
-		fmt.Printf("RTT for request %d: %d ms\n", i + 1, (time.Now().UnixNano() - startTime))
+		fmt.Println(time.Now().UnixNano() - startTime)
 	}
 }

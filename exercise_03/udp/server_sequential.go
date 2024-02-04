@@ -4,13 +4,11 @@ package main
 import (
 	"fmt"
 	"net"
-	"sync"
 )
 
 const requests = 10000
 
-func handleHttpRequest(wg *sync.WaitGroup, conn *net.UDPConn, addr *net.UDPAddr, message string) {
-	defer wg.Done()
+func handleHttpRequest(conn *net.UDPConn, addr *net.UDPAddr, message string) {
 	response := []byte(message)
 	_, err := conn.WriteToUDP(response, addr)
 	if err != nil {
@@ -19,9 +17,7 @@ func handleHttpRequest(wg *sync.WaitGroup, conn *net.UDPConn, addr *net.UDPAddr,
 }
 
 func main() {
-	fmt.Println("Starting UDP server!")
-
-	serverAddr, err := net.ResolveUDPAddr("udp", "localhost:8081")
+	serverAddr, err := net.ResolveUDPAddr("udp", "localhost:8082")
 	if err != nil {
 		fmt.Println("Error resolving address:", err)
 		return
@@ -34,23 +30,15 @@ func main() {
 		return
 	}
 
-	fmt.Println("Waiting for requests...")
-
-	wg := sync.WaitGroup{}
-	for i := 0; ; i++ {
-		wg.Add(1)
+	for i := 0; i < requests; i++ {
 		response := "HTTP/1.1 200 OK"
 		buffer := make([]byte, 1024)
 
-		n, addr, err := conn.ReadFromUDP(buffer)
+		_, addr, err := conn.ReadFromUDP(buffer)
 		if err != nil {
 			response = "HTTP/1.1 500 Internal Server Error"
 		}
 
-		go handleHttpRequest(&wg, conn, addr, response)
-		
-		fmt.Printf("Request %d from address %s:\n%s\n\n", i+1, addr, string(buffer[:n]))
+		handleHttpRequest(conn, addr, response)
 	}
-	wg.Wait()
-	fmt.Println("here\n")
 }
