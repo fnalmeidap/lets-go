@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gorpc/impl"
+	"gorpc/impl" // see README.md
 	"fmt"
 	"net"
 	"net/rpc"

@@ -1,9 +1,10 @@
 package main
 
 import (
-	"gorpc/impl"
+	"gorpc/impl" // see README.md
 	"fmt"
 	"net/rpc"
+	"time"
 )
 
 const requests = 10000
@@ -17,8 +18,6 @@ func sendHttpRequest(client *rpc.Client) {
 		fmt.Println("Error calling server.")
 		panic(err)
 	}
-
-	fmt.Println(response)
 }
 
 func main() {
@@ -35,5 +34,9 @@ func main() {
 		panic(err)
 	}
 
-	sendHttpRequest(client)
+	for i := 0; i < requests; i++ {
+		startTime := time.Now().UnixNano()
+		sendHttpRequest(client)
+		fmt.Println(time.Now().UnixNano() - startTime)
+	}
 }
