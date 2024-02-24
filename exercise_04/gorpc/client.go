@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gorpc/api"
+	"gorpc/impl"
 	"fmt"
 	"net/rpc"
 )
@@ -9,19 +9,20 @@ import (
 const requests = 10000
 
 func sendHttpRequest(client *rpc.Client) {
-	request := api.Request{Message: "Hello from client!"}
-	response := api.Response{ }
+	request := impl.Request{Message: "Hello from client!"}
+	response := impl.Response{ }
 
-	// (fnap): discarding response on purpose to maintain experiment factors
-	err := client.Call("Server.Greet", request, &response)
+	err := client.Call("Api.Greet", request, &response)
 	if err != nil {
-		fmt.Println("Error reading server's response.")
+		fmt.Println("Error calling server.")
 		panic(err)
 	}
+
+	fmt.Println(response)
 }
 
 func main() {
-	client, err := rpc.DialHTTP("tcp", "localhost:8082")
+	client, err := rpc.Dial("tcp", "localhost:8081")
 	defer func(client *rpc.Client) {
 		var err = client.Close()
 		if err != nil {
@@ -30,11 +31,9 @@ func main() {
 		}
 	}(client)
 	if err != nil {
-		fmt.Println("Error resolving server address:", err)
-		return
+		fmt.Println("Error dialing server.")
+		panic(err)
 	}
 
-
 	sendHttpRequest(client)
-
 }

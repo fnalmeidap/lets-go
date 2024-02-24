@@ -1,4 +1,4 @@
-package api
+package impl
 
 type Api struct {}
 
