@@ -9,11 +9,11 @@ import (
 const requests = 10000
 
 func sendHttpRequest(client *rpc.Client) {
-	request := api.Request{message: "Hello from client!"}
-	response := api.Response{}
+	request := api.Request{Message: "Hello from client!"}
+	response := api.Response{ }
 
 	// (fnap): discarding response on purpose to maintain experiment factors
-	err = client.Call("Server.Greet", request, &response)
+	err := client.Call("Server.Greet", request, &response)
 	if err != nil {
 		fmt.Println("Error reading server's response.")
 		panic(err)

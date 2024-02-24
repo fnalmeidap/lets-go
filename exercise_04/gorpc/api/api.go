@@ -3,14 +3,14 @@ package api
 type Api struct {}
 
 type Request struct {
-	message string
+	Message string
 }
 
 type Response struct {
-	message string
+	Message string
 }
 
 func (a *Api) Greet(req Request, res *Response) error {
-	res.message = "Hello from server!"
+	res.Message = "Hello from server!"
 	return nil
 }
