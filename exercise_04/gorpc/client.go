@@ -1,17 +1,16 @@
 package main
 
 import (
-	"lets-go/exercise_04/gorpc/impl"
+	"gorpc/api"
 	"fmt"
 	"net/rpc"
-	"time"
 )
 
 const requests = 10000
 
 func sendHttpRequest(client *rpc.Client) {
-	request := impl.Request{message: "Hello from client!"}
-	response := impl.Response{}
+	request := api.Request{message: "Hello from client!"}
+	response := api.Response{}
 
 	// (fnap): discarding response on purpose to maintain experiment factors
 	err = client.Call("Server.Greet", request, &response)
@@ -35,9 +34,7 @@ func main() {
 		return
 	}
 
-	for i := 0; i < requests; i++ {
-		startTime := time.Now().UnixNano()
-		sendHttpRequest(client)
-		fmt.Println(time.Now().UnixNano() - startTime)
-	}
+
+	sendHttpRequest(client)
+
 }

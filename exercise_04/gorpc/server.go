@@ -1,7 +1,7 @@
 package main
 
 import (
-	"lets-go/exercise_04/gorpc/impl"
+	"gorpc/api"
 	"fmt"
 	"net"
 	"net/http"
@@ -25,7 +25,7 @@ func handleHttpRequest(conn net.Conn) {
 }
 
 func main() {
-	api := new(impl.Api)
+	api := new(api.Api)
 
 	server := rpc.NewServer()
 	server.RegisterName("Api", api)
