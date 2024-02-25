@@ -11,6 +11,6 @@ type Response struct {
 }
 
 func (a *Api) Greet(req Request, res *Response) error {
-	res.Message = "Hello from server!"
+	res.Message = "HTTP/1.1 200 OK"
 	return nil
 }
