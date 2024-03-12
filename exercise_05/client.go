@@ -21,8 +21,8 @@ func checkError(err error) {
 	}
 }
 
-func sendHttpRequest(ch *amqp.Channel) {
-	request := "oi"
+func sendHttpRequest(ch *amqp.Channel, message string) {
+	request := message
 	requestBytes, err := json.Marshal(request)
 	checkError(err)
 
@@ -39,8 +39,6 @@ func sendHttpRequest(ch *amqp.Channel) {
 		},
 	)
 	checkError(err)
-
-	//TODO: consume from reply queue
 }
 
 func main() {
@@ -54,28 +52,41 @@ func main() {
 
 	replyQueue, err := ch.QueueDeclare(
 		ResponseQueue,
-		false, // Durable
-		false, // Delete when unused
-		false, // Exclusive
-		true,  // No-wait
-		nil,   // Arguments
+		false,
+		false,
+		false,
+		false,
+		nil,
 	)
 	checkError(err)
 
-	ch.Consume(
+	msgs, err := ch.Consume(
 		replyQueue.Name,
 		"",
 		true,
 		false,
 		false,
-		true, // nowait
+		false,
 		nil,
 	)
 	checkError(err)
 
 	for i := 0; i < REQUESTS; i++ {
 		startTime := time.Now().UnixNano()
-		sendHttpRequest(ch)
+
+		request := "POST /path HTTP/1.1\n" +
+			"Host: localhost:8081\n" +
+			"Content-Type: text/plain\n" +
+			"Content-Length: 18\n" +
+			"Hello from client!"
+
+		sendHttpRequest(ch, request)
+
+		msg := <-msgs
+		var response string
+		err = json.Unmarshal(msg.Body, &response)
+		checkError(err)
+
 		fmt.Println(time.Now().UnixNano() - startTime)
 	}
 }

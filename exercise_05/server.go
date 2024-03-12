@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -25,19 +24,17 @@ func main() {
 	checkError(err)
 	defer conn.Close()
 
-	fmt.Println("here")
-
 	ch, err := conn.Channel()
 	checkError(err)
 	defer ch.Close()
 
 	queue, err := ch.QueueDeclare(
 		RequestQueue,
-		false, // Durable
-		false, // Delete when unused
-		false, // Exclusive
-		false, // No-wait
-		nil,   // Arguments
+		false,
+		false,
+		false,
+		false,
+		nil,
 	)
 	checkError(err)
 
@@ -47,13 +44,19 @@ func main() {
 		true,
 		false,
 		false,
-		true, // nowait
+		true,
 		nil,
 	)
 	checkError(err)
 
-	for msg := range msgs {
-		response := "hello client"
+	for {
+		msg := <-msgs
+
+		var request string
+		err = json.Unmarshal(msg.Body, &request)
+		checkError(err)
+
+		response := "HTTP/1.1 200 OK"
 		responseBytes, err := json.Marshal(response)
 		checkError(err)
 
