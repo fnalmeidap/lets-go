@@ -1,23 +1,22 @@
 package main
 
 import (
-	"gorpc/impl"
 	"fmt"
+	"gorpc/impl"
 	"net/rpc"
 	"time"
 )
 
-const requests = 10000
+const requests = 30000
 
 func sendHttpRequest(client *rpc.Client) {
-	request := impl.Request{Message:
-				"POST /path HTTP/1.1\n" +
-				"Host: localhost:8081\n" +
-				"Content-Type: text/plain\n" +
-				"Content-Length: 18\n" +
-				"Hello from client!" }
+	request := impl.Request{Message: "POST /path HTTP/1.1\n" +
+		"Host: localhost:8081\n" +
+		"Content-Type: text/plain\n" +
+		"Content-Length: 18\n" +
+		"Hello from client!"}
 
-	response := impl.Response{ }
+	response := impl.Response{}
 
 	err := client.Call("Api.Greet", request, &response)
 	if err != nil {

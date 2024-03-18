@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	REQUESTS      = 10000
+	REQUESTS      = 30000
 	ResponseQueue = "response_queue"
 	RequestQueue  = "request_queue"
 )
